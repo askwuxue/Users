@@ -1,0 +1,22 @@
+{
+  "name": "users",
+  "version": "1.0.0",
+  "description": "user show and add or edit",
+  "main": "index.js",
+  "dependencies": {
+    "mongoose": "^5.11.19"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mongoose",
+    "Node",
+    "css",
+    "html",
+    "javascript"
+  ],
+  "author": "askwuxue",
+  "license": "ISC"
+}
