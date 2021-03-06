@@ -4,8 +4,21 @@ const mongoose = require('mongoose');
 const fs = require('fs');
 const { timeEnd } = require('console');
 const { start } = require('repl');
+
 // 接受的是一个函数 不能够写成字符串
 const readFile = util.promisify(fs.readFile);
+
+// Schema
+const Schema = mongoose.Schema;
+
+mongoose.connect('mongodb://localhost/Users', { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+        console.log('mongodb connect access....')
+    })
+    .catch(err => {
+        console.log('mongodb connect failed.....');
+        console.log(err);
+    })
 
 // 获取url参数并对象化
 const getUrlParas = (url) => {
@@ -86,6 +99,65 @@ const responseFn = (res, url) => {
 // 创建server
 const server = http.createServer();
 
+// 创建模式
+const usersSchema = new Schema({
+    name: {
+        type: String,
+        required: true,
+        minlength: 2,
+        maxlength: 16,
+        trim: true
+    },
+    age: {
+        type: Number,
+        required: true,
+        min: 14,
+        max: 75
+    },
+    hobbies: {
+        type: [String],
+        required: true,
+        min: 3,
+        max: 16
+    },
+    email: {
+        type: String,
+        required: true,
+        minlength: 8,
+        maxlength: 16,
+        trim: true
+    }
+})
+
+// 创建Model
+const Users = mongoose.model('Users', usersSchema);
+
+// 创建一个文档
+// Users.create({
+//         name: 'wuxue',
+//         age: 24,
+//         hobbies: ['red book', 'basketball', 'movie'],
+//         email: '972523419@qq.com'
+//     }).then(data => {
+//         console.log('create data access......');
+//         console.log(data);
+//     })
+//     .catch(err => {
+//         console.log('create data failed......');
+//         console.log(err);
+//     })
+
+// 删除已经添加的测试数据
+Users.deleteMany({ name: 'wuxue' }).then(data => {
+        console.log('name is wuxue delete all and access......');
+        console.log(data);
+    })
+    .catch(err => {
+        console.log('name is wuxue delete all failed');
+        console.log(err);
+    })
+
+
 server.on('request', async(req, res) => {
     let method = req.method;
 
@@ -101,15 +173,94 @@ server.on('request', async(req, res) => {
                 let flag = false;
 
                 if (url === '/') {
-                    let index;
+                    let list;
                     try {
-                        index = await readFile('./router/list.html', 'utf8');
+                        // index = await readFile('./router/list.html', 'utf8');
+                        list = `<!DOCTYPE html>
+                        <html lang="en">
+                        
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+                            <link rel="stylesheet" href="../css/list.css">
+                            <title>List</title>
+                        </head>
+                        <div class="container">
+                            <!-- Content here -->
+                            <button type="button" class="btn btn-primary">添加</button>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">编号</th>
+                                        <th scope="col">姓名</th>
+                                        <th scope="col">年龄</th>
+                                        <th scope="col">兴趣爱好</th>
+                                        <th scope="col">邮箱</th>
+                                        <th scope="col">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+                        // 查询数据并拿到数据
+                        let users = await Users.find();
+                        // console.log('find database access.......');
+                        // console.log(users);
+                        users.forEach((item, index) => {
+                                console.log(item);
+                                console.log(index);
+                                list += `<tr><th scope="row">${index}</th><td>${item.name}</td><td>${item.age}</td><td>`;
+                                item.hobbies.forEach(value => {
+                                        list += `${value}`
+                                    })
+                                    // TODO 有哪些坑
+                                    // for (let key in item) {
+                                    //     console.log(key);
+                                    //     console.log(item[key]);
+                                    //     list += `<td>${key}</td>`;
+                                    // }
+                                    // item.forEach(value => {
+                                    //     list += `<td>${value}</td>`;
+                                    // })
+                                    // for (let value of Object.values(item)) {
+                                    //     // list += `<td>${value}</td>`;
+                                    //     console.log('use for of start ........');
+                                    //     console.log(value);
+                                    // }
+                                    // console.log('use for of start ........');
+                                    // console.log(Object.values(item));
+                                list += `</td><td>${item.email}</td><td>
+                                <button type="button" class="btn btn-dark">修改</button>
+                                <button type="button" class="btn btn-danger">删除</button>
+                            </td></tr>`;
+                                // console.log(list);
+                            })
+                            // Users.find().then(data => {
+                            //         console.log('find database access.......');
+                            //         console.log(data);
+
+                        //     })
+                        //     .catch(err => {
+                        //         console.log('find database failed......');
+                        //         console.log(data);
+                        //     })
+
+                        list += ` </tbody>
+                        </table>
+                    </div>
+                    
+                    <body>
+                    </body>
+                    
+                    </html>`;
+                        // console.log(index);
+                        // index = ``
                     } catch (err) {
                         console.log('readFile failed');
                         console.log(err);
                     }
                     console.log('readFile ok....');
-                    res.end(index);
+                    res.end(list);
                 }
 
                 // 请求css source
