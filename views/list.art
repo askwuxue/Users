@@ -1,0 +1,53 @@
+// <!DOCTYPE html>
+// <html lang="en">
+
+// <head>
+//     <meta charset="UTF-8">
+//     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+//     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+//     <link rel="stylesheet" href="../css/list.css">
+//     <script src="../js/list.js"></script>
+//     <title>List</title>
+// </head>
+
+{{extend './layout.art'}}
+
+{{block 'linkCss'}}<link rel="stylesheet" href="../css/list.css">{{/block}}
+
+{{block 'refScript'}}<script src="../js/list.js"></script>{{/block}}
+
+{{block 'title'}} List {{/block}}
+
+{{block 'content'}}
+<div class="container">
+    <!-- Content here -->
+    <button type="button" class="btn btn-primary">添加</button>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">编号</th>
+                <th scope="col">姓名</th>
+                <th scope="col">年龄</th>
+                <th scope="col">兴趣爱好</th>
+                <th scope="col">邮箱</th>
+                <th scope="col">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">${index}</th>
+                <td>${item.name}</td>
+                <td>${item.age}</td>
+                <td>
+                </td>
+                <td>${item.email}</td>
+                <td>
+                    <button type="button" class="btn btn-dark"><a href="http://localhost:3000/edit?_id=${item._id}" style="color: #fff;text-decoration: none">修改</a></button>
+                    <button type="button" class="btn btn-danger"><a href="http://localhost:3000/delete?_id=${item._id}" style="color: #fff;text-decoration: none">删除</a></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+ {{/block}}
