@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     <link rel="stylesheet" href="../css/list.css">
+    <script src="../js/list.js"></script>
     <title>List</title>
 </head>
 <div class="container">
@@ -31,8 +32,9 @@
                 <td>@mdo</td>
                 <td>9725*****@qq.com</td>
                 <td>
-                    <button type="button" class="btn btn-dark">修改</button>
-                    <button type="button" class="btn btn-danger">删除</button>
+                    <!--TODO a标签的大小小于button -->
+                    <button type="button" class="btn btn-dark"><a href="http://localhost:3000/edit?_id=" style="color: #fff;display: block;width: 100%;text-decoration: none">修改</a></button>
+                    <button type="button" class="btn btn-danger"><a href="http://localhost:3000/edit?_id=" style="color: #fff;display: block;width: 100%;text-decoration: none">删除</a></button>
                 </td>
             </tr>
         </tbody>
