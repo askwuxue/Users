@@ -117,15 +117,11 @@ server.on('request', async(req, res) => {
 
                         // 查询数据并拿到数据
                         let users = await Users.find();
-                        console.log('users: ', users);
 
                         let pathname = __dirname + '/views' + '/list.art';
 
                         const html = template(pathname, { users });
-                        // console.log('html: ', html);
                         res.end(html);
-                        // console.log(index);
-                        // index = ``
                     } catch (err) {
                         console.log('readFile failed');
                         console.log(err);
@@ -150,7 +146,6 @@ server.on('request', async(req, res) => {
                     let { _id } = queryString.parse(req.url, '?');
                     console.log(typeof(_id));
                     console.log('_id: ', _id);
-                    // console.log(_id.replace(/"/g, ""));
 
                     // TODO ObjectId 必须是可以转成Number类型的数据 
                     _id = _id.replace(/"/g, "");
@@ -178,9 +173,6 @@ server.on('request', async(req, res) => {
                     console.log('request method is get and request url is /delete');
 
                     let { _id } = queryString.parse(req.url, '?');
-                    console.log(typeof(_id));
-                    console.log('_id: ', _id);
-                    // console.log(_id.replace(/"/g, ""));
 
                     // TODO ObjectId 必须是可以转成Number类型的数据 
                     _id = _id.replace(/"/g, "");
@@ -214,11 +206,9 @@ server.on('request', async(req, res) => {
                 console.log('POST enter.......');
 
                 if (url === '/') {
-                    // console.log('/');
                     let postData = '';
                     req.on('data', chunk => {
                         postData += chunk;
-                        console.log('postData: ', queryString.parse(postData));
                     });
                     req.on('end', () => {
                         // 数据插入数据库
@@ -237,19 +227,10 @@ server.on('request', async(req, res) => {
                     let editData = '';
                     console.log('urlParasObj: ', urlParasObj);
 
-
-
                     let { _id } = queryString.parse(req.url, '?');
-                    console.log(typeof(_id));
-                    console.log('_id: ', _id);
-                    // console.log(_id.replace(/"/g, ""));
 
                     // TODO ObjectId 必须是可以转成Number类型的数据 
                     _id = _id.replace(/"/g, "");
-                    console.log(typeof(_id));
-                    console.log(_id);
-                    console.log('queryString.parse(req.url): ', queryString.parse(req.url, '?'));
-
 
                     // 监听数据post数据的传输 
                     req.on('data', async(chunk) => {
@@ -263,16 +244,12 @@ server.on('request', async(req, res) => {
                         });
                         res.end();
                     });
-                    req.on('end', () => {
-                        // console.log('ok');
-                    })
+                    req.on('end', () => {})
                     console.log('post request edit  .......................');
                 }
             }
             break;
     }
-    // console.log(req);
-    // res.end('ok');
 })
 
 // 监听服务
