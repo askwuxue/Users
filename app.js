@@ -1,6 +1,9 @@
 const http = require('http');
 const util = require('util');
 
+// 引入引入末班引擎
+const template = require('art-template');
+
 // 导入mongodb
 require('./model');
 

@@ -4,6 +4,7 @@
   "description": "user show and add or edit",
   "main": "index.js",
   "dependencies": {
+    "art-template": "^4.13.2",
     "mongoose": "^5.11.19"
   },
   "devDependencies": {},
