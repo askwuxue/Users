@@ -1,6 +1,9 @@
 const http = require('http');
 const util = require('util');
 
+// 引入art-template 
+const template = require('art-template');
+
 // 导入mongodb
 require('./model');
 
@@ -110,59 +113,17 @@ server.on('request', async(req, res) => {
                 let flag = false;
 
                 if (url === '/') {
-                    let list;
                     try {
-                        list = `<!DOCTYPE html>
-                        <html lang="en">
-                        
-                        <head>
-                            <meta charset="UTF-8">
-                            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-                            <link rel="stylesheet" href="../css/list.css">
-                            <script src="../js/list.js"></script>
-                            <title>List</title>
-                        </head>
-                        <div class="container">
-                            <!-- Content here -->
-                            <button type="button" class="btn btn-primary">添加</button>
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">编号</th>
-                                        <th scope="col">姓名</th>
-                                        <th scope="col">年龄</th>
-                                        <th scope="col">兴趣爱好</th>
-                                        <th scope="col">邮箱</th>
-                                        <th scope="col">操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody>`;
 
                         // 查询数据并拿到数据
                         let users = await Users.find();
-                        users.forEach((item, index) => {
-                            list += `<tr><th scope="row">${index}</th><td>${item.name}</td><td>${item.age}</td><td>`;
-                            item.hobbies.forEach(value => {
-                                list += `${value}`
-                            })
+                        console.log('users: ', users);
 
-                            list += `</td><td>${item.email}</td><td>
-                                <button type="button" class="btn btn-dark"><a href="http://localhost:3000/edit?_id=${item._id}" style="color: #fff;text-decoration: none">修改</a></button>
-                                <button type="button" class="btn btn-danger"><a href="http://localhost:3000/delete?_id=${item._id}" style="color: #fff;text-decoration: none">删除</a></button>
-                            </td></tr>`;
-                            // console.log(list);
-                        })
+                        let pathname = __dirname + '/views' + '/list.art';
 
-                        list += ` </tbody>
-                        </table>
-                    </div>
-                    
-                    <body>
-                    </body>
-                    
-                    </html>`;
+                        const html = template(pathname, { users });
+                        // console.log('html: ', html);
+                        res.end(html);
                         // console.log(index);
                         // index = ``
                     } catch (err) {
@@ -170,167 +131,61 @@ server.on('request', async(req, res) => {
                         console.log(err);
                     }
                     console.log('readFile ok....');
-                    res.end(list);
+                    // res.end(html);
 
                     // 添加用户
                 } else if (url === '/add') {
-                    let addHtml;
-                    addHtml = `<!DOCTYPE html>
-                    <html lang="en">
-                    
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-                        <title>Add User</title>
-                    </head>
-                    
-                    <body>
-                        <div class="container">
-                            <!-- Content here -->
-                            <h2>添加用户信息</h2>
-                            <form method="POST" action="/" enctype="application/x-www-form-urlencoded">
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1"></label>姓名</label>
-                                    <input type="input" name="name" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">年龄</label>
-                                    <input type="number" name="age" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">邮箱</label>
-                                    <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputPassword1">密码</label>
-                                    <input type="password" name="password" class="form-control" id="exampleInputPassword1">
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" name="hobbies" type="checkbox" value="吃饭" id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck1">
-                                      吃饭
-                                    </label>
-                                    <input class="form-check-input" name="hobbies" type="checkbox" value="睡觉" style="margin-left: 10px;" id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck2" style="margin-left: 30px;">
-                                      睡觉
-                                    </label>
-                                    <input class="form-check-input" name="hobbies" type="checkbox" value="读书" style="margin-left: 10px;" id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck3" style="margin-left: 30px;">
-                                      读书
-                                    </label>
-                                    <input class="form-check-input" name="hobbies" type="checkbox" value="看电影" style="margin-left: 10px;" id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck4" style="margin-left: 30px;">
-                                      看电影
-                                    </label>
-                                    <input class="form-check-input" name="hobbies" type="checkbox" value="跑步" style="margin-left: 10px;" id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck5" style="margin-left: 30px;">
-                                      跑步
-                                    </label>
-                                    <input class="form-check-input" name="hobbies" type="checkbox" value="足球" style="margin-left: 10px;" id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck6" style="margin-left: 30px;">
-                                      足球
-                                    </label>
-                                    <input class="form-check-input" name="hobbies" type="checkbox" value="篮球" style="margin-left: 10px;" id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck7" style="margin-left: 30px;">
-                                      篮球
-                                    </label>
-                                    <input class="form-check-input" name="hobbies" type="checkbox" value="敲代码" style="margin-left: 10px;" id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck8" style="margin-left: 30px;">
-                                      敲代码
-                                    </label>
-                                    <input class="form-check-input" name="hobbies" type="checkbox" value="打豆豆" style="margin-left: 10px;" id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck9" style="margin-left: 30px;">
-                                      打豆豆
-                                    </label>
-                                </div>
-                                <button type="submit" class="btn btn-primary" style="margin-top: 20px;">提交</button>
-                    
-                            </form>
-                        </div>
-                    </body>
-                    
-                    </html>`;
+                    let pathname = __dirname + '/views' + '/add.art';
+
+                    let addHtml = template(pathname, {})
+                        // addHtml = ``;
                     res.end(addHtml);
 
                     // 编辑用户信息
                 } else if (url === '/edit') {
+
                     console.log('get request edit ..........');
-                    console.log(urlParasObj);
+
+                    // TODO 结构赋值导致_id 是带有引号的字符串
+                    let { _id } = queryString.parse(req.url, '?');
+                    console.log(typeof(_id));
+                    console.log('_id: ', _id);
+                    // console.log(_id.replace(/"/g, ""));
+
+                    // TODO ObjectId 必须是可以转成Number类型的数据 
+                    _id = _id.replace(/"/g, "");
+                    console.log(typeof(_id));
+                    console.log(_id);
+                    console.log('queryString.parse(req.url): ', queryString.parse(req.url, '?'));
+                    // console.log(urlParasObj);
                     let hobbies = ['吃饭', '睡觉', '读书', '看电影', '跑步', '足球', '篮球', '敲代码', '打豆豆'];
 
-                    let editUserData = await Users.findOne({ _id: urlParasObj._id });
+                    let editUserData = await Users.findOne({ _id: _id });
+                    console.log('editUserData: ', editUserData);
 
-                    let edit = `<!DOCTYPE html>
-                    <html lang="en">
-                    
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-                        <title>Add User</title>
-                    </head>
-                    
-                    <body>
-                        <div class="container">
-                            <!-- Content here -->
-                            <h2>编辑用户信息</h2>
-                            <!--TODO 此表单通过post提交 action中拼接的id是通过get请求的方式发出的 也可以被获得 -->
-                            <form method="POST" action="http://localhost:3000/edit?_id=${urlParasObj._id}" enctype="application/x-www-form-urlencoded">
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1"></label>姓名</label>
-                                    <input type="input" name="name" value=${editUserData.name} class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">年龄</label>
-                                    <input type="number" name="age" value=${editUserData.age} class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">邮箱</label>
-                                    <input type="email" name="email" value=${editUserData.email} class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputPassword1">密码</label>
-                                    <input type="password" name="password" value=${editUserData.password} class="form-control" id="exampleInputPassword1">
-                                </div>
-                                <div class="form-check">
-                                    `;
+                    let pathname = __dirname + '/views' + '/edit.art';
 
-                    // 判断哪些hobby在用户的已选择范围内
-                    hobbies.forEach(item => {
-                        let isHobby = editUserData.hobbies.includes(item);
+                    // 导入模板变量
+                    template.defaults.imports.hobbies1 = hobbies;
 
-                        // 是用户已选择的hobby
-                        if (isHobby) {
-                            edit += `<input class="form-check-input" name="hobbies" type="checkbox" value="${item}" checked="${isHobby}" style="margin-left: 10px;" id="defaultCheck1">
-                            <label class="form-check-label" for="defaultCheck2" style="margin-left: 30px;">
-                              ${item}
-                            </label>`
-                        } else {
-                            edit += `<input class="form-check-input" name="hobbies" type="checkbox" value="${item}" style="margin-left: 10px;" id="defaultCheck1">
-                            <label class="form-check-label" for="defaultCheck2" style="margin-left: 30px;">
-                            ${item}
-                            </label>`;
-                        }
-                    })
-                    edit += `
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="margin-top: 20px;">提交</button>
-                </form>
-            </div>
-        </body>
-        </html>`
-                    res.end(edit);
+                    //向模板引擎传递数据
+                    let editHtml = template(pathname, editUserData);
+
+                    res.end(editHtml);
 
                     // 删除用户信息
                 } else if (url === '/delete') {
                     console.log('request method is get and request url is /delete');
 
-                    await Users.findOneAndDelete({ _id: urlParasObj._id });
+                    let { _id } = queryString.parse(req.url, '?');
+                    console.log(typeof(_id));
+                    console.log('_id: ', _id);
+                    // console.log(_id.replace(/"/g, ""));
+
+                    // TODO ObjectId 必须是可以转成Number类型的数据 
+                    _id = _id.replace(/"/g, "");
+
+                    await Users.findOneAndDelete({ _id: _id });
 
                     res.writeHead(301, {
                         Location: 'http://localhost:3000/'
@@ -382,12 +237,26 @@ server.on('request', async(req, res) => {
                     let editData = '';
                     console.log('urlParasObj: ', urlParasObj);
 
+
+
+                    let { _id } = queryString.parse(req.url, '?');
+                    console.log(typeof(_id));
+                    console.log('_id: ', _id);
+                    // console.log(_id.replace(/"/g, ""));
+
+                    // TODO ObjectId 必须是可以转成Number类型的数据 
+                    _id = _id.replace(/"/g, "");
+                    console.log(typeof(_id));
+                    console.log(_id);
+                    console.log('queryString.parse(req.url): ', queryString.parse(req.url, '?'));
+
+
                     // 监听数据post数据的传输 
                     req.on('data', async(chunk) => {
                         editData += chunk;
 
                         // 对数据库数据进行更新
-                        await Users.findOneAndUpdate({ _id: urlParasObj._id }, queryString.parse(editData));
+                        await Users.findOneAndUpdate({ _id: _id }, queryString.parse(editData));
 
                         res.writeHead(301, {
                             Location: 'http://localhost:3000/'

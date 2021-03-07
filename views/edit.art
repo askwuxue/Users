@@ -1,0 +1,46 @@
+{{extend './layout.art'}} 
+{{block 'title'}} Edit {{/block}}
+
+{{block 'content'}}
+    <div class="container">
+        <!-- Content here -->
+        <h2>编辑用户信息</h2>
+        <!--TODO 此表单通过post提交 action中拼接的id是通过get请求的方式发出的 也可以被获得 -->
+        <form method="POST" action="http://localhost:3000/edit?_id={{_id}}" enctype="application/x-www-form-urlencoded">
+            <div class="form-group">
+                <label for="exampleInputEmail1"></label>姓名</label>
+                <input type="input" name="name" value="{{name}}" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">年龄</label>
+                <input type="number" name="age" value="{{age}}" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">邮箱</label>
+                <input type="email" name="email" value="{{email}}" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">密码</label>
+                <input type="password" name="password" value="" class="form-control" id="exampleInputPassword1">
+            </div>
+            <!-- TODO 导入的变量和模板变量重名的情况下 变量会被模板变量给覆盖 -->
+            <div class="form-check">
+            <% for(let i = 0; i < $imports.hobbies1.length; i++) { %>
+                <% if(hobbies.includes($imports.hobbies1[i])) { %>
+                    <input class="form-check-input" name="hobbies" type="checkbox" value="{{$imports.hobbies1[i]}}" checked="checked" style="margin-left: 10px;" id="defaultCheck1">
+                    <label class="form-check-label" for="defaultCheck2" style="margin-left: 30px;">
+                       <%= $imports.hobbies1[i] %> 
+                    </label>
+                <% } else { %>
+                    <input class="form-check-input" name="hobbies" type="checkbox" value="{{$imports.hobbies1[i]}}" style="margin-left: 10px;" id="defaultCheck1">
+                    <label class="form-check-label" for="defaultCheck2" style="margin-left: 30px;">
+                       <%= $imports.hobbies1[i] %> 
+                    </label>
+                <% } %>
+             <% } %>
+             </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 20px;">提交</button>
+        </form>
+    </div>
+{{/block}}

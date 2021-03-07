@@ -8,8 +8,6 @@
     
     {{block 'linkCss'}}{{/block}}
     {{block 'refScript'}}{{/block}}
-    // <link rel="stylesheet" href="../css/list.css">
-    // <script src="../js/list.js"></script>
     <title>{{block 'title'}}My title{{/block}}</title>
 </head>
     {{block 'content'}}{{/block}}
