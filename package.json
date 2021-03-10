@@ -5,7 +5,9 @@
   "main": "index.js",
   "dependencies": {
     "art-template": "^4.13.2",
-    "mongoose": "^5.11.19"
+    "finalhandler": "^1.1.2",
+    "mongoose": "^5.11.19",
+    "router": "^1.3.5"
   },
   "devDependencies": {},
   "scripts": {
