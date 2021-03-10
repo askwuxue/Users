@@ -1,8 +1,8 @@
 {{extend './layout.art'}}
 
-{{block 'linkCss'}}<link rel="stylesheet" href="../css/list.css">{{/block}}
+{{block 'linkCss'}}<link rel="stylesheet" href="../public/css/list.css">{{/block}}
 
-{{block 'refScript'}}<script src="../js/list.js"></script>{{/block}}
+{{block 'refScript'}}<script src="../public/js/list.js"></script>{{/block}}
 
 {{block 'title'}} List {{/block}}
 
