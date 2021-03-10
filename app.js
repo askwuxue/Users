@@ -4,6 +4,17 @@ const util = require('util');
 // 引入art-template 
 const template = require('art-template');
 
+// 开启art-template的压缩页面功能 art-template 内建的压缩器可以压缩 HTML、JS、CSS，它在编译阶段运行，
+// 因此完全不影响渲染速度，并且能够加快网络传输。
+// 如果模板包含没有闭合的 HTML 标签，请不要打开 minimize，否则可能被 htmlMinifier 修复或过滤
+template.defaults.minimize = true;
+
+// 配置末班根目录
+template.defaults.root = __dirname + '/views/';
+
+// 配置默认的后缀名，配置了之后可以省略后缀名
+template.defaults.extname = '.art';
+
 // 导入mongodb
 require('./model');
 
@@ -119,9 +130,9 @@ server.on('request', async(req, res) => {
                         let users = await Users.find();
                         console.log('users: ', users);
 
-                        let pathname = __dirname + '/views' + '/list.art';
+                        // let pathname = __dirname + '/views' + '/list.art';
 
-                        const html = template(pathname, { users });
+                        const html = template('list', { users });
                         // console.log('html: ', html);
                         res.end(html);
                         // console.log(index);
@@ -135,9 +146,8 @@ server.on('request', async(req, res) => {
 
                     // 添加用户
                 } else if (url === '/add') {
-                    let pathname = __dirname + '/views' + '/add.art';
 
-                    let addHtml = template(pathname, {})
+                    let addHtml = template('add', {})
                         // addHtml = ``;
                     res.end(addHtml);
 
@@ -163,13 +173,13 @@ server.on('request', async(req, res) => {
                     let editUserData = await Users.findOne({ _id: _id });
                     console.log('editUserData: ', editUserData);
 
-                    let pathname = __dirname + '/views' + '/edit.art';
+                    // let pathname = __dirname + '/views' + '/edit.art';
 
                     // 导入模板变量
                     template.defaults.imports.hobbies1 = hobbies;
 
                     //向模板引擎传递数据
-                    let editHtml = template(pathname, editUserData);
+                    let editHtml = template('edit', editUserData);
 
                     res.end(editHtml);
 
