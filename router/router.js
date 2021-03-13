@@ -145,18 +145,5 @@ router.get('/delete', async(req, res) => {
     res.end();
 })
 
-// 处理post请求
-// router.use('/', (req, res) => {
-//     if (req.method === 'POST') {
-//         console.log('get............................................................');
-//     } else {
-//         console.log('post..................................................................');
-//         res.end();
-
-
-//     }
-// })
-
-
 
 module.exports = router;
