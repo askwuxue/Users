@@ -25,7 +25,43 @@ router.use(async(req, res, next) => {
         req.on('end', () => {
             console.log('method is post and postData: ' + postData);
 
-            console.log('method is post and postData: ' + decodeURIComponent(postData));
+
+            console.log('decodePostData: ', decodePostData);
+
+            // 将post参数处理进行封装
+            const bodyParse = (postData = []) => {
+
+                // 将被转义的字符串进行处理
+                let decodePostData = decodeURIComponent(postData);
+            }
+            let tmp = decodePostData.split('&');
+
+            let tempObj = {};
+            let arr = [];
+            for (let i = 0; i < tmp.length; i++) {
+                let tempArr = tmp[i].split('=');
+
+                // TODO 正确的使用解构赋值
+                let [objKey, objValue] = tempArr;
+                if (!tempObj.hasOwnProperty(objKey)) {
+                    tempObj[objKey] = objValue;
+                } else {
+
+                    // TODO 属性值是数组 但是不够严格
+                    if (Array.isArray(tempObj[objKey])) {
+                        tempObj[objKey].push(objValue);
+                    } else {
+                        let firstValue = tempObj[objKey];
+                        let arr = [firstValue];
+                        arr.push(objValue);
+                        tempObj[objKey] = arr;
+                    }
+                }
+            }
+            console.log('tempObj: ', tempObj);
+
+            // console.log('tmp: ', tmp);
+            // console.log('method is post and postData: ' + decodePostData);
             res.end('ok');
         })
 
