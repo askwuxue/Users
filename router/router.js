@@ -12,7 +12,78 @@ const template = require('art-template');
 
 const queryString = require('querystring');
 
+// 获取url参数并对象化
+const getUrlParas = (reqUrl = '') => {
+    const paramObj = {};
+    // paramObj.url = '123';
+    if (reqUrl.indexOf('?') !== -1) {
+        // let url = paramObj.substring()
+        let paramStr = reqUrl.substring(reqUrl.indexOf('?') + 1);
+        // paramObj.url = paramStr(0, reqUrl.indexOf('?'));
+        let paramArr = paramStr.split('&');
+        paramArr.forEach(item => {
+            const param = item.split('=');
+            paramObj[param[0]] = param[1];
+        });
+    } else {
+        // paramObj.url = '123';
+    }
+    return paramObj;
+};
+
+// 将post参数处理进行封装
+const bodyParse = (postData = []) => {
+
+    // 将被转义的字符串进行处理
+    let decodePostData = decodeURIComponent(postData);
+
+    // 使用&进行分割形成数组
+    let tmp = decodePostData.split('&');
+
+    // 处理checkbox
+    let tempObj = {};
+
+    // 通过遍历已分割数组，通过=进行二次分割
+    for (let i = 0; i < tmp.length; i++) {
+
+        let tempArr = tmp[i].split('=');
+
+        // TODO 正确的使用解构赋值
+        let [objKey, objValue] = tempArr;
+
+        if (!tempObj.hasOwnProperty(objKey)) {
+
+            tempObj[objKey] = objValue;
+
+            // 如果有多个相同的属性值 处理checkbox
+        } else {
+
+            // TODO 属性值是数组
+            if (Array.isArray(tempObj[objKey])) {
+
+                tempObj[objKey].push(objValue);
+
+            } else {
+
+                let firstValue = tempObj[objKey];
+
+                let arr = [firstValue];
+
+                arr.push(objValue);
+
+                tempObj[objKey] = arr;
+
+            }
+        }
+    }
+
+    return tempObj;
+
+}
+
 router.use(async(req, res, next) => {
+
+    console.log('getUrlParas: is ' + getUrlParas(req.url));
 
     if (req.method === 'POST') {
 
@@ -24,61 +95,15 @@ router.use(async(req, res, next) => {
 
         req.on('end', () => {
 
-            // 将post参数处理进行封装
-            const bodyParse = (postData = []) => {
+            Users.create(bodyParse(postData));
 
-                // 将被转义的字符串进行处理
-                let decodePostData = decodeURIComponent(postData);
+            // 重定向到首页
+            res.writeHead(301, {
+                Location: 'http://localhost:3000/'
+            });
 
-                // 使用&进行分割形成数组
-                let tmp = decodePostData.split('&');
-
-                // 处理checkbox
-                let tempObj = {};
-
-                // 通过遍历已分割数组，通过=进行二次分割
-                for (let i = 0; i < tmp.length; i++) {
-
-                    let tempArr = tmp[i].split('=');
-
-                    // TODO 正确的使用解构赋值
-                    let [objKey, objValue] = tempArr;
-
-                    if (!tempObj.hasOwnProperty(objKey)) {
-
-                        tempObj[objKey] = objValue;
-
-                        // 如果有多个相同的属性值 处理checkbox
-                    } else {
-
-                        // TODO 属性值是数组
-                        if (Array.isArray(tempObj[objKey])) {
-
-                            tempObj[objKey].push(objValue);
-
-                        } else {
-
-                            let firstValue = tempObj[objKey];
-
-                            let arr = [firstValue];
-
-                            arr.push(objValue);
-
-                            tempObj[objKey] = arr;
-
-                        }
-                    }
-                }
-
-                return tempObj;
-
-            }
-
-            console.log('bodyParse: ', bodyParse(postData));
-
-            res.end('ok');
+            res.end();
         })
-
 
     } else {
         next();

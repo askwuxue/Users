@@ -45,19 +45,7 @@ const { route } = require('./router/router');
 const readFile = util.promisify(fs.readFile);
 
 
-// 获取url参数并对象化
-const getUrlParas = (url) => {
-    const paramObj = {};
-    if (url.indexOf('?') != -1) {
-        let paramStr = url.substring(url.indexOf('?') + 1);
-        let paramArr = paramStr.split('&');
-        paramArr.forEach(item => {
-            const param = item.split('=');
-            paramObj[param[0]] = param[1];
-        });
-    }
-    return paramObj;
-};
+
 
 /*
  * 根据资源类型设置头部
