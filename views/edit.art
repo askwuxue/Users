@@ -5,7 +5,7 @@
     <div class="container">
         <!-- Content here -->
         <h2>编辑用户信息</h2>
-        <!--TODO 此表单通过post提交 action中拼接的id是通过get请求的方式发出的 也可以被获得 -->
+        <!--TODO 此表单通过post提交 action中拼接的id是通过get请求的方式发出的 也可以被获得 这是一种get请求和post请求结合的方式 -->
         <form method="POST" action="http://localhost:3000/edit?_id={{_id}}" enctype="application/x-www-form-urlencoded">
             <div class="form-group">
                 <label for="exampleInputEmail1"></label>姓名</label>

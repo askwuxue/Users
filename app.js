@@ -190,7 +190,6 @@ server.on('request', async(req, res) => {
 
                     let { _id } = queryString.parse(req.url, '?');
 
-                    // TODO ObjectId 必须是可以转成Number类型的数据 
                     _id = _id.replace(/"/g, "");
 
                     await Users.findOneAndDelete({ _id: _id });
@@ -245,7 +244,6 @@ server.on('request', async(req, res) => {
 
                     let { _id } = queryString.parse(req.url, '?');
 
-                    // TODO ObjectId 必须是可以转成Number类型的数据 
                     _id = _id.replace(/"/g, "");
 
                     // 监听数据post数据的传输 
