@@ -113,6 +113,7 @@ server.on('request', async(req, res) => {
     // 如果url中包含参数 只取 ? 前面的url
     let url = req.url.slice(0, req.url.includes('?') ? req.url.indexOf('?') : req.url.length);
     let urlParasObj = getUrlParas(req.url);
+    console.log('urlParasObj: ', urlParasObj);
     console.log(`URL is: ${url}`);
     console.log(`request is: ${method}`);
     // 根据请求方法进行相应

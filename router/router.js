@@ -12,99 +12,59 @@ const template = require('art-template');
 
 const queryString = require('querystring');
 
-// 获取url参数并对象化
-const getUrlParas = (reqUrl = '') => {
-    const paramObj = {};
-    // paramObj.url = '123';
-    if (reqUrl.indexOf('?') !== -1) {
-        // let url = paramObj.substring()
-        let paramStr = reqUrl.substring(reqUrl.indexOf('?') + 1);
-        // paramObj.url = paramStr(0, reqUrl.indexOf('?'));
-        let paramArr = paramStr.split('&');
-        paramArr.forEach(item => {
-            const param = item.split('=');
-            paramObj[param[0]] = param[1];
-        });
-    } else {
-        // paramObj.url = '123';
-    }
-    return paramObj;
-};
+// 引入获取url参数并对象化模块
+const getUrlParas = require('../common/getUrlParas');
 
-// 将post参数处理进行封装
-const bodyParse = (postData = []) => {
-
-    // 将被转义的字符串进行处理
-    let decodePostData = decodeURIComponent(postData);
-
-    // 使用&进行分割形成数组
-    let tmp = decodePostData.split('&');
-
-    // 处理checkbox
-    let tempObj = {};
-
-    // 通过遍历已分割数组，通过=进行二次分割
-    for (let i = 0; i < tmp.length; i++) {
-
-        let tempArr = tmp[i].split('=');
-
-        // TODO 正确的使用解构赋值
-        let [objKey, objValue] = tempArr;
-
-        if (!tempObj.hasOwnProperty(objKey)) {
-
-            tempObj[objKey] = objValue;
-
-            // 如果有多个相同的属性值 处理checkbox
-        } else {
-
-            // TODO 属性值是数组
-            if (Array.isArray(tempObj[objKey])) {
-
-                tempObj[objKey].push(objValue);
-
-            } else {
-
-                let firstValue = tempObj[objKey];
-
-                let arr = [firstValue];
-
-                arr.push(objValue);
-
-                tempObj[objKey] = arr;
-
-            }
-        }
-    }
-
-    return tempObj;
-
-}
+// 引入处理post请求参数模块
+const bodyParse = require('../common/bodyParse');
 
 router.use(async(req, res, next) => {
 
-    console.log('getUrlParas: is ' + getUrlParas(req.url));
+    // 获取请求地址 不包括参数
+    let url = getUrlParas(req.url);
 
     if (req.method === 'POST') {
 
-        let postData = '';
+        if (url === '/') {
+            let postData = '';
 
-        req.on('data', chunk => {
-            postData += chunk;
-        })
+            req.on('data', chunk => {
+                postData += chunk;
+            })
 
-        req.on('end', () => {
+            req.on('end', () => {
 
-            Users.create(bodyParse(postData));
+                Users.create(bodyParse(postData));
 
-            // 重定向到首页
-            res.writeHead(301, {
-                Location: 'http://localhost:3000/'
+                // 重定向到首页
+                res.writeHead(301, {
+                    Location: 'http://localhost:3000/'
+                });
+
+                res.end();
+            })
+        } else if (url === '/edit') {
+
+            let { _id } = queryString.parse(req.url, '?');
+
+            // TODO ObjectId 必须是可以转成Number类型的数据 
+            _id = _id.replace(/"/g, "");
+
+            // 监听数据post数据的传输 
+            let editData = '';
+            req.on('data', async(chunk) => {
+                editData += chunk;
+
+                // 对数据库数据进行更新
+                await Users.findOneAndUpdate({ _id: _id }, queryString.parse(editData));
+                console.log('queryString.parse(editData): ', queryString.parse(editData));
+
+                res.writeHead(301, {
+                    Location: 'http://localhost:3000/'
+                });
+                res.end();
             });
-
-            res.end();
-        })
-
+        }
     } else {
         next();
     }
@@ -146,6 +106,8 @@ router.get('/edit', async(req, res) => {
     // 导入模板变量
     template.defaults.imports.hobbies1 = hobbies;
 
+    editUserData.id = editUserData.id.replace(/"/g, '');
+
     //向模板引擎传递数据
     const editHtml = template('edit', editUserData);
 
@@ -169,6 +131,5 @@ router.get('/delete', async(req, res) => {
 
     res.end();
 })
-
 
 module.exports = router;
