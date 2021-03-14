@@ -9,7 +9,7 @@
   - serve- static: 对静态资源进行处理。
   - art-template: 进行模板渲染。
 
-#### 1. 目录结构介绍
+#### 2. 目录结构介绍
 ```
 ├─common        存放公共文件,主要为个人封装的函数库
 ├─log           存放了一些个人项目过程中的一些问题
@@ -22,4 +22,20 @@
 ├─router        路由
 └─views         视图文件
 ```
+#### 3. 使用指南
+3.1 克隆仓库到本地
+```git
+git clone  
+```
 
+3.2 安装
+```shell
+npm install 
+```
+3.3 运行
+```shell
+1.0版本 node app.js
+2.0版本 node routerApp.js
+```
+3.4 演示效果
+打开浏览器，输入localhost:3000
